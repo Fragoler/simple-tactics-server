@@ -1,8 +1,4 @@
-﻿using GameServer.Model.Components;
-using GameServer.Model.Contexts;
-using GameServer.Model.IoC;
-
-namespace GameServer.Model.Systems;
+﻿namespace GameServer.Model.IoC;
 
 
 public abstract class BaseSystem

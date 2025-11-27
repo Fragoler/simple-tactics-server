@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using GameServer.Model.Systems;
+﻿using System.Reflection;
 
 namespace GameServer.Model.IoC;
 
@@ -11,6 +7,12 @@ public sealed class IoCManager
 {
     private readonly Dictionary<Type, BaseSystem> _systems = new();
 
+    public IoCManager()
+    {
+        AutoRegisterSystems();
+        InitializeAll();
+    }
+    
     public void AutoRegisterSystems()
     {
         var systemTypes = FindDerivedTypes(Assembly.GetExecutingAssembly(), typeof(BaseSystem));
@@ -19,7 +21,7 @@ public sealed class IoCManager
         {
             if (type.IsAbstract)
                 continue;
-            
+                        
             Register(type);
         }
     }
@@ -46,7 +48,9 @@ public sealed class IoCManager
             throw new InvalidOperationException($"System {type.Name} is already registered");
 
         if (Activator.CreateInstance(type) is BaseSystem system)
+        {
             _systems.Add(type, system);
+        }
         else
             throw new OutOfMemoryException($"Error creating system type: {type.Name}");
     }
@@ -76,7 +80,6 @@ public sealed class IoCManager
                 throw new InvalidOperationException(
                     $"Dependency {field.FieldType.Name} not found for {type.Name}");
         }
-        
     }
 
     private static IEnumerable<Type> FindDerivedTypes(Assembly assembly, Type baseType)
