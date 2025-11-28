@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using GameServer.Model.Entities;
 using GameServer.Model.EventBus;
 using GameServer.Model.IoC;
@@ -109,9 +110,16 @@ public class ComponentSystem : BaseSystem
         
         if (targetType.IsInstanceOfType(value))
             return value;
-        
-        if (value is Dictionary<string, object> nestedData && !IsSimpleType(targetType))
-            return CreateComplexObject(targetType, nestedData);
+
+        if (value is IDictionary dictionary && !IsSimpleType(targetType))
+        {
+            var data = new Dictionary<string, object>();
+            foreach (DictionaryEntry entry in dictionary)
+                if (entry.Key is string key)
+                    data[key] = entry.Value!;
+            return CreateComplexObject(targetType, data);
+        }
+            
         
         if (value is IEnumerable<object> collection && !IsSimpleType(targetType))
             return CreateCollection(targetType, collection);

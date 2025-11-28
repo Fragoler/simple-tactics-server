@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using GameServer.Model.IoC;
 using GameServer.Model.Players;
+using GameServer.Model.Prototype;
 
 namespace GameServer.Model.Games;
 
@@ -8,7 +9,7 @@ namespace GameServer.Model.Games;
 public sealed class GamesSystem : BaseSystem
 {
     [Dependency] private PlayersSystem _players = null!;
-    
+    [Dependency] private PrototypeSystem _proto = null!;
 
     private readonly Dictionary<string, Game> _games = [];
 
